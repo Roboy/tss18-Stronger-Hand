@@ -1,0 +1,169 @@
+gripper=robotics.RigidBodyTree('MaxNumBodies',4, 'Dataformat', 'column');
+L1=0.35;
+L2=0.35;
+L3=0.3;
+
+DHParams1=[ 0.6/2,pi,0,0; 
+    L1,0,0,0;
+    L2,0,0,0; 
+    L3,0,0,0];
+    
+
+body0=robotics.RigidBody('palm1');
+joint=robotics.Joint('BaseJoint1');
+setFixedTransform(joint,DHParams1(1,:),'dh');
+body0.Joint= joint;
+addBody(gripper,body0, 'base');
+
+body1=robotics.RigidBody('GrundPhalanx1');
+joint=robotics.Joint('MCPJoint1', 'revolute');
+%joint.HomePosition=-(pi/2-pi/8);
+setFixedTransform(joint, DHParams1(2,:),'dh');
+joint.JointAxis=[0 0 1];
+body1.Joint= joint;
+addBody(gripper,body1, 'palm1');
+
+body2 = robotics.RigidBody('MittelPhalanx1');
+joint = robotics.Joint('PIPJoint1','revolute');
+joint.HomePosition=0;
+setFixedTransform(joint, DHParams1(3,:),'dh');
+joint.JointAxis=[0 0 1];
+body2.Joint= joint;
+addBody(gripper, body2, 'GrundPhalanx1');
+
+body2 = robotics.RigidBody('EndPhalanx1');
+joint = robotics.Joint('DIPJoint1','revolute');
+joint.HomePosition=0;
+setFixedTransform(joint, DHParams1(4,:),'dh');
+joint.JointAxis=[0 0 1];
+body2.Joint= joint;
+addBody(gripper, body2, 'MittelPhalanx1');
+
+posinitial=pi/2-pi/8;
+config=[posinitial;0; 0;];
+
+figure;
+
+show(gripper,config);
+hold on;
+
+
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%underactuated_swipe
+%  for i = 0:15:45
+% 
+%     n=i*(pi/180);
+%     config=[posinitial;0;n];
+%     show(gripper,config);
+%     config=[posinitial;n;pi/4];
+%     show(gripper,config);
+%     config=[posinitial+n;pi/4;pi/4];
+%     show(gripper,config);
+%     hold on;
+% 
+%  end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%fullyactuatedswipe
+%  for i1 = 0:15:45
+%     n1=i1*(pi/180);
+%   for i2 = 0:15:45
+%     n2=i2*(pi/180);
+%     for i3 = 0:15:45
+%         n3=i3*(pi/180);
+%         config=[posinitial+n1;n2;n3];
+%         show(gripper,config);
+%         hold on;
+%     end
+%   end
+%  end
+ 
+ 
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%robustness
+%  for i1 = 10:5:20
+%     n=i1*(pi/180);
+%     config=[posinitial+n;(15*pi/180);0];
+%     show(gripper,config);
+%     
+%  end
+%  for i2 = 15:5:30
+%     n=i2*(pi/180);
+%     config=[posinitial+(20*pi/180);n;0];
+%     show(gripper,config);
+%     
+%  end
+% for i3 = 20:-5:10
+%     n=i3*(pi/180);
+%     config=[posinitial+n;(30*pi/180);0];
+%     show(gripper,config);
+%     
+%  end
+% for i4 = 30:-5:15
+%     n=i4*(pi/180);
+%     config=[posinitial+(10*pi/180);n;0];
+%     show(gripper,config);
+%     hold on;
+%  end
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%JointPositionPrecision
+%  for i1 = 0:4:23
+%     n=i1*(pi/180);
+%     config=[posinitial+n;0;0];
+%     show(gripper,config);
+%     
+%  end
+%  for i2 = 0:4:25
+%     n=i2*(pi/180);
+%     config=[posinitial+(23*pi/180);n;0];
+%     show(gripper,config);
+%     
+%  end
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%lateralprecision
+%  for i = 23:5:40
+% 
+%     n=i*(pi/180);
+%     configlateralpr=[posinitial+n;0;0];
+%     show(gripper,configlateralpr);
+%     hold on;
+% 
+%  end
+
+
+%  %%%%%%%%%%%%%%%%%%%%%%%%%%%lateralpower
+%  for i = 0:10:22
+%     
+%     n=i*(pi/180);
+%     configlateralpower1=[posinitial;n; (pi/8-n)];
+%     %show(gripper,configlateralpower1);
+%     hold on;
+%     
+%     configlateralpower2=[posinitial+n;(pi/8-n); 0];
+%     show(gripper,configlateralpower2);
+%     hold on;
+%      
+% end
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%spherical/cylindircalpower
+% for i = 0:5:15
+%     
+%     n=i*(pi/180);
+%     configzylindircalPower=[posinitial+n/3;2*n; 3.5*n];
+%     show(gripper,configzylindircalPower);
+%     hold on;
+%     
+% end
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%spherical/cylindircalprecision
+for i = 0:15:30
+    
+    n=i*(pi/180);
+    configzylindircalPower=[posinitial+n/3;pi/8; pi/4];
+    show(gripper,configzylindircalPower);
+    hold on;
+
+end
+
+
+showdetails(gripper)
+
